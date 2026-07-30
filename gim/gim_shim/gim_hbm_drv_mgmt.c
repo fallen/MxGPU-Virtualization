@@ -47,6 +47,11 @@ static int gim_hbm_drv_mgmt_add_memory(struct gim_hbm_drv_mgmt_t *ctx)
 {
 	int ret;
 
+	panic("we went through an unsupported code path!\n");
+	/* Add memory to NUMA node as driver-managed */
+	ret = 0;
+// add_memory_driver_managed is not available on 4.19 kernel
+#if 0
 	ret = add_memory_driver_managed(ctx->numa_id, ctx->phy_addr, ctx->phy_size,
 					ctx->name, MHP_MEMMAP_ON_MEMORY);
 	if (ret == -EINVAL) {
@@ -55,6 +60,7 @@ static int gim_hbm_drv_mgmt_add_memory(struct gim_hbm_drv_mgmt_t *ctx)
 		ret = add_memory_driver_managed(ctx->numa_id, ctx->phy_addr, ctx->phy_size,
 						ctx->name, MHP_NONE);
 	}
+#endif
 
 	return ret;
 }
@@ -191,6 +197,8 @@ void gim_hbm_drv_mgmt_fini(void *hbm_drv_mgmt)
 	if (ctx != NULL) {
 		cancel_delayed_work_sync(&ctx->reg_work);
 		if (ctx->registered) {
+#if 0
+// on 4.19 kernel remove_memory needs a NID parameter
 			int ret;
 
 			ret = remove_memory(ctx->phy_addr, ctx->phy_size);
@@ -201,6 +209,7 @@ void gim_hbm_drv_mgmt_fini(void *hbm_drv_mgmt)
 				gim_info("%s: Successfully removed HBM memory region start=0x%llx, size=0x%llx from NUMA node %d\n",
 					 ctx->name, ctx->phy_addr, ctx->phy_size, ctx->numa_id);
 			}
+#endif
 		}
 		kfree(ctx);
 	}

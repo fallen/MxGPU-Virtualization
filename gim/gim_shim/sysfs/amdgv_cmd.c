@@ -58,7 +58,7 @@ static int amdgv_ras_ioctl_handler(struct file *file, unsigned int cmd, unsigned
 
 	if (ras_ioctl_cmd.cmd_buf_size &&
 	    ras_ioctl_cmd.cmd_buf_ptr &&
-	    !access_ok((void __user *)ras_ioctl_cmd.cmd_buf_ptr, ras_ioctl_cmd.cmd_buf_size)) {
+	    !access_ok(VERIFY_WRITE, (void __user *)ras_ioctl_cmd.cmd_buf_ptr, ras_ioctl_cmd.cmd_buf_size)) {
 		gim_warn("Invaild command buffer memory!\n");
 		return -EINVAL;
 	}
