@@ -15,6 +15,7 @@
 #include <linux/version.h>
 #include <linux/acpi.h>
 #include "gim_live_update.h"
+#include <acpi/acpi_numa.h>
 
 #include <linux/ftrace.h>
 #include "gim_ftrace.h"

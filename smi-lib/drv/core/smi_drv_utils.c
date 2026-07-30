@@ -14,6 +14,11 @@
 	#include <limits.h>
 #endif
 
+// needed for 4.19 kernel
+#ifndef INT_MAX
+#define INT_MAX          __INT_MAX__
+#endif
+
 uint64_t smi_eeprom_to_utc_format(uint64_t eeprom_timestamp)
 {
 	uint64_t year, month, day, hour, minute, second;

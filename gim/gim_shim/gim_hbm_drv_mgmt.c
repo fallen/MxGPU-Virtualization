@@ -103,13 +103,18 @@ void *gim_hbm_drv_mgmt_init(const char *name, int numa_id,
 	snprintf(gim_hbm_drv_mgmt->name, sizeof(gim_hbm_drv_mgmt->name),
 		"System RAM (%s)", name);
 
+	panic("we went through an unsupported code path!\n");
 	/* Add memory to NUMA node as driver-managed */
+	ret = 0;
+// add_memory_driver_managed is not available on 4.19 kernel
+#if 0
 	ret = add_memory_driver_managed(
 			gim_hbm_drv_mgmt->numa_id,
 			gim_hbm_drv_mgmt->phy_addr,
 			gim_hbm_drv_mgmt->phy_size,
 			gim_hbm_drv_mgmt->name,
 			MHP_NONE);
+#endif
 	if (ret) {
 		gim_warn("%s: Failed to add HBM memory to kernel memory management (error: %d)\n",
 			name, ret);
@@ -138,6 +143,10 @@ void *gim_hbm_drv_mgmt_init(const char *name, int numa_id,
 void gim_hbm_drv_mgmt_fini(void *hbm_drv_mgmt) {
 	int ret;
 	struct gim_hbm_drv_mgmt_t *gim_hbm_drv_mgmt = (struct gim_hbm_drv_mgmt_t *)hbm_drv_mgmt;
+	gim_warn("unsupported code path!\n");
+	return;
+#if 0
+// on 4.19 kernel remove_memory needs a NID parameter
 	if (gim_hbm_drv_mgmt != NULL) {
 		ret = remove_memory(gim_hbm_drv_mgmt->phy_addr, gim_hbm_drv_mgmt->phy_size);
 		if (ret) {
@@ -149,4 +158,5 @@ void gim_hbm_drv_mgmt_fini(void *hbm_drv_mgmt) {
 		}
 		kfree(gim_hbm_drv_mgmt);
 	}
+#endif
 }

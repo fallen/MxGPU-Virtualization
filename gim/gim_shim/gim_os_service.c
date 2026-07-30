@@ -114,7 +114,8 @@ struct gim_mce_mgr {
 struct gim_mce_mgr  g_gim_mce_mgr = {
 	.nb = {
 		.notifier_call = gim_mce_notifier,
-		.priority = MCE_PRIO_UC,
+// MCE_PRIO_UC does not exist on 4.19 kernel
+		.priority = MCE_PRIO_LOWEST,
 	},
 };
 
@@ -2214,7 +2215,8 @@ static void gim_dump_stack(void)
 
 static int gim_access_ok(const void *ptr, unsigned long size)
 {
-	return access_ok(ptr, size);
+// on 4.19 kernel access_ok takes an extra read/write argument
+	return access_ok(VERIFY_WRITE, ptr, size);
 }
 
 static int gim_copy_from_user(void *to, const void *from, uint32_t size)
@@ -2715,7 +2717,7 @@ static int gim_set_dma_mask(oss_dev_t dev, uint32_t bits)
 #ifdef SHIM_LAYER_OSS_RADIX_TREE
 static void gim_radix_tree_init(void *root)
 {
-	INIT_RADIX_TREE(root, GFP_KERNEL);
+	INIT_RADIX_TREE((struct radix_tree_root *)root, GFP_KERNEL);
 }
 
 static void  gim_radix_tree_fini(void *root)
