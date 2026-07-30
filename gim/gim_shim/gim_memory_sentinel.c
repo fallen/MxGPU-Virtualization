@@ -9,6 +9,7 @@
 #include <linux/slab.h>
 #include <linux/mm.h>
 #include <linux/overflow.h>
+#include <linux/uaccess.h>
 
 #include "gim_debug.h"
 #include "gim_config.h"
@@ -586,6 +587,20 @@ static void *gim_sentinel_malloc_helper(void *ptr, size_t size, uint64_t alloc_f
 	return ret_ptr;
 }
 
+unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+			      unsigned int skipnr)
+{
+	struct stack_trace trace = {
+		.entries	= store,
+		.max_entries	= size,
+		.skip		= skipnr + 1,
+	};
+
+	save_stack_trace(&trace);
+	return trace.nr_entries;
+}
+EXPORT_SYMBOL_GPL(stack_trace_save);
+
 static inline unsigned long gim_sentinel_get_allocate_stack(void)
 {
 	unsigned long entries[GIM_MEMORY_SENTINEL_SAVE_STACK_BUFFER_SIZE];
@@ -682,7 +697,7 @@ static void *gim_sentinel_vmalloc(size_t size)
 	void *ptr;
 	unsigned long record_entry;
 
-	if (size > (totalram_pages() << PAGE_SHIFT)) {
+	if (size > (totalram_pages << PAGE_SHIFT)) {
 		gim_warn("alloc size %ld bigger than total ram, return NULL\n", size);
 		return NULL;
 	}
@@ -711,7 +726,7 @@ static void *gim_sentinel_vzalloc(size_t size)
 	void *ptr;
 	unsigned long record_entry;
 
-	if (size > (totalram_pages() << PAGE_SHIFT)) {
+	if (size > (totalram_pages << PAGE_SHIFT)) {
 		gim_warn("alloc size %ld bigger than total ram, return NULL\n", size);
 		return NULL;
 	}
@@ -846,7 +861,7 @@ static void gim_memory_sentinel_free_by_checktable(struct gim_memory_sentinel_ma
 static bool __gim_memory_sentinel_header_accessible(void *header)
 {
 	char buffer[sizeof(struct gim_memory_sentinel_malloc_header)];
-	return !copy_from_kernel_nofault(buffer, header, sizeof(buffer));
+	return !probe_kernel_read(buffer, header, sizeof(buffer));
 }
 
 static void *gim_sentinel_free_helper(const void *p)

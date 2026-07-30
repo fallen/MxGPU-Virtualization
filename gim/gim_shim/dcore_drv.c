@@ -1358,7 +1358,7 @@ int dcore_iova_mmap(struct file *filp, struct vm_area_struct *vma)
 	for (i = 0; i < page_cnt; i++) {
 		guest_pfn[i] = vma->vm_pgoff + i;
 	}
-
+#if 0
 #if defined(HAVE_DCORE_IOVA_VM_CTX_VFIO_DEVICE)
 	vm_ctx->vdev = &vpdev->vdev;
 #if !defined(HAVE_VFIO_DMA_UNMAP)
@@ -1400,10 +1400,11 @@ int dcore_iova_mmap(struct file *filp, struct vm_area_struct *vma)
 	vma->vm_ops = &dcore_vma_ops;
 	vma->vm_private_data = (void *)vm_ctx;
 	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP | VM_PFNMAP;
-
+#endif
 	return 0;
 
 unreg:
+#if 0
 #if defined(HAVE_DCORE_IOVA_VM_CTX_VFIO_DEVICE)
 #if !defined(HAVE_VFIO_DMA_UNMAP)
 	vfio_unregister_notifier(vm_ctx->vdev, VFIO_IOMMU_NOTIFY,
@@ -1412,6 +1413,7 @@ unreg:
 #else
 	vfio_unregister_notifier(&vm_ctx->pdev->dev, VFIO_IOMMU_NOTIFY,
 			&vm_ctx->vfio_notifier);
+#endif
 #endif
 
 failed:

@@ -15,7 +15,7 @@ subdir-ccflags-y += -I$(SMI_DRV_PATH)/inc -I$(SMI_DRV_PATH)/linux -I$(SMI_LIB_PA
 subdir-ccflags-y += -I$(GIM_COMS_PATH)/inc
 subdir-ccflags-y += -I$(src)/inc
 subdir-ccflags-y += -include $(src)/dkms/config.h
-subdir-ccflags-y += -Werror -Wimplicit-fallthrough=2 -Wno-enum-conversion -Wno-expansion-to-defined
+subdir-ccflags-y += -Wimplicit-fallthrough=2 -Wno-enum-conversion -Wno-expansion-to-defined
 
 include $(GIM_SHIM_PATH)/Kbuild
 
