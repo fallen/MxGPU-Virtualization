@@ -417,6 +417,8 @@ static int gim_pci_write_config_dword(oss_dev_t dev, int where, uint32_t val)
 static bool gim_in_virtual_machine(void)
 {
 #ifdef CONFIG_X86
+	if (xen_initial_domain())
+		return false;
 	return boot_cpu_has(X86_FEATURE_HYPERVISOR);
 #else
 	return false;
