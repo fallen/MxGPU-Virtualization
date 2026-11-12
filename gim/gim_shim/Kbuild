@@ -23,3 +23,4 @@ gim-y += gim_shim/sysfs/gim_guard.o
 gim-y += gim_shim/sysfs/gim_debugfs.o
 gim-y += gim_shim/sysfs/amdgv_cmd.o
 gim-y += gim_shim/sysfs/amdgv_uniras_cmd.o
+gim-y += kcompat_xarray.o

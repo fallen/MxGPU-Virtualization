@@ -63,7 +63,6 @@
 #include <linux/kmemleak.h>
 #endif
 
-
 #include "amdgv_oss.h"
 #include "gim_debug.h"
 #include "gim_config.h"
@@ -72,6 +71,8 @@
 
 #include "gim_hbm_dax.h"
 #include "gim_hbm_drv_mgmt.h"
+
+#include "kcompat.h"
 
 extern struct gim_error_ring_buffer *gim_error_rb;
 

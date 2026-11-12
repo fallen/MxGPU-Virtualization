@@ -39,6 +39,8 @@
 #include "gim_debugfs.h"
 #include "gim_monitor.h"
 
+#include "kcompat.h"
+
 struct gim_init_thread_context {
 	void *pdev;
 	const void *ent;
